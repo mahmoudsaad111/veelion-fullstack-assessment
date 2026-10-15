@@ -1,17 +1,28 @@
-import type { Task } from "@/types/api";
+import type { Task, TaskFilter } from "@/types/api";
 import { TaskItem } from "@/components/tasks/TaskItem";
 
 type TaskListProps = {
   tasks: Task[];
+  hasTasks: boolean;
+  filter: TaskFilter;
   updatingTaskId: string;
   onToggle: (task: Task) => void;
 };
 
-export function TaskList({ tasks, updatingTaskId, onToggle }: TaskListProps) {
+const EMPTY_FILTER_MESSAGES: Record<TaskFilter, string> = {
+  all: "No tasks to show.",
+  completed: "No completed tasks yet.",
+  pending: "No pending tasks. Everything is done.",
+};
+
+export function TaskList({ tasks, hasTasks, filter, updatingTaskId, onToggle }: TaskListProps) {
   if (tasks.length === 0) {
+    // Two different cases: nothing exists at all, or the filter hides everything.
+    const message = hasTasks ? EMPTY_FILTER_MESSAGES[filter] : "No tasks have been created yet.";
+
     return (
       <section className="card" style={{ padding: "1rem" }}>
-        <p style={{ margin: 0, color: "var(--muted)" }}>No tasks match this filter.</p>
+        <p style={{ margin: 0, color: "var(--muted)" }}>{message}</p>
       </section>
     );
   }

@@ -7,10 +7,12 @@ import { TaskList } from "@/components/tasks/TaskList";
 
 export function TaskDashboard() {
   const {
+    tasks,
     filteredTasks,
     filter,
     loading,
-    error,
+    loadError,
+    updateError,
     updatingTaskId,
     setFilter,
     fetchTasks,
@@ -30,22 +32,42 @@ export function TaskDashboard() {
       <StatusFilter value={filter} onChange={setFilter} />
 
       {loading ? (
-        <section className="card" style={{ padding: "1rem" }}>
+        <section className="card" style={{ padding: "1rem" }} role="status">
           <p style={{ margin: 0 }}>Loading tasks...</p>
         </section>
       ) : null}
 
-      {error ? (
-        <section className="card" style={{ padding: "1rem", borderColor: "#e3b4c0", background: "#fff8fa" }}>
-          <p style={{ marginTop: 0, marginBottom: "0.75rem", color: "var(--danger)" }}>{error}</p>
+      {loadError ? (
+        <section
+          className="card"
+          style={{ padding: "1rem", borderColor: "#e3b4c0", background: "#fff8fa" }}
+          role="alert"
+        >
+          <p style={{ marginTop: 0, marginBottom: "0.75rem", color: "var(--danger)" }}>{loadError}</p>
           <button type="button" className="button" onClick={fetchTasks}>
             Retry
           </button>
         </section>
       ) : null}
 
-      {!loading && !error ? (
-        <TaskList tasks={filteredTasks} updatingTaskId={updatingTaskId} onToggle={handleToggle} />
+      {updateError ? (
+        <section
+          className="card"
+          style={{ padding: "0.8rem 1rem", borderColor: "#e3b4c0", background: "#fff8fa" }}
+          role="alert"
+        >
+          <p style={{ margin: 0, color: "var(--danger)" }}>{updateError}</p>
+        </section>
+      ) : null}
+
+      {!loading && !loadError ? (
+        <TaskList
+          tasks={filteredTasks}
+          hasTasks={tasks.length > 0}
+          filter={filter}
+          updatingTaskId={updatingTaskId}
+          onToggle={handleToggle}
+        />
       ) : null}
     </section>
   );
