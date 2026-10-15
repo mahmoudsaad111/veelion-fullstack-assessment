@@ -1,40 +1,25 @@
 const HttpError = require('../../../utils/httpError');
+const {
+  assertPlainObject,
+  assertNoUnknownFields,
+  readOptionalString,
+} = require('../../../utils/validation');
 
 const ALLOWED_FIELDS = ['title', 'completed'];
-
-function validatePayloadShape(payload) {
-  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
-    throw new HttpError(400, 'Body must be a JSON object.');
-  }
-}
-
-function ensureNoUnknownFields(payload) {
-  const unknownFields = Object.keys(payload).filter(
-    (field) => !ALLOWED_FIELDS.includes(field)
-  );
-
-  if (unknownFields.length > 0) {
-    throw new HttpError(400, 'Body contains unsupported fields.', {
-      unsupportedFields: unknownFields,
-    });
-  }
-}
+const MAX_TITLE_LENGTH = 200;
 
 function normalizeTitleIfPresent(payload, normalized) {
-  if (!Object.hasOwn(payload, 'title')) {
+  const title = readOptionalString(payload, 'title', MAX_TITLE_LENGTH);
+
+  if (title === undefined) {
     return;
   }
 
-  if (typeof payload.title !== 'string') {
-    throw new HttpError(400, '"title" must be a string.');
-  }
-
-  const trimmedTitle = payload.title.trim();
-  if (!trimmedTitle) {
+  if (!title) {
     throw new HttpError(400, '"title" cannot be empty.');
   }
 
-  normalized.title = trimmedTitle;
+  normalized.title = title;
 }
 
 function normalizeCompletedIfPresent(payload, normalized) {
@@ -50,8 +35,8 @@ function normalizeCompletedIfPresent(payload, normalized) {
 }
 
 function validateCreateTask(payload) {
-  validatePayloadShape(payload);
-  ensureNoUnknownFields(payload);
+  assertPlainObject(payload);
+  assertNoUnknownFields(payload, ALLOWED_FIELDS);
 
   const normalized = {};
   normalizeTitleIfPresent(payload, normalized);
@@ -69,8 +54,8 @@ function validateCreateTask(payload) {
 }
 
 function validateUpdateTask(payload) {
-  validatePayloadShape(payload);
-  ensureNoUnknownFields(payload);
+  assertPlainObject(payload);
+  assertNoUnknownFields(payload, ALLOWED_FIELDS);
 
   const normalized = {};
   normalizeTitleIfPresent(payload, normalized);
