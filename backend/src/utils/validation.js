@@ -18,7 +18,7 @@ function assertNoUnknownFields(payload, allowedFields) {
   }
 }
 
-// Returns the trimmed string, or undefined when the field was not sent.
+// Returns the trimmed string, or undefined when the client omitted the field.
 function readOptionalString(payload, fieldName, maxLength) {
   if (!Object.hasOwn(payload, fieldName)) {
     return undefined;

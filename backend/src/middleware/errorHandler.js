@@ -5,7 +5,11 @@ function errorHandler(error, req, res, next) {
     return next(error);
   }
 
-  const statusCode = Number.isInteger(error.statusCode) ? error.statusCode : 500;
+  const statusCode = Number.isInteger(error.statusCode)
+    ? error.statusCode
+    : Number.isInteger(error.status)
+      ? error.status
+      : 500;
   const message = statusCode === 500 ? 'Internal server error' : error.message;
 
   const response = {

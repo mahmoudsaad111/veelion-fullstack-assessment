@@ -1,6 +1,6 @@
 const fs = require('node:fs/promises');
 
-// One promise chain per file, so changes to the same file run one at a time.
+// Each file gets its own queue, so concurrent requests cannot write to the same file.
 const writeQueues = new Map();
 
 async function readJsonArray(filePath) {
@@ -22,8 +22,8 @@ async function readJsonArray(filePath) {
   }
 }
 
-// Writes to a temporary file first and then renames it over the original,
-// so a crash in the middle of a write cannot leave half a JSON file behind.
+// Write to a temporary file before replacing the original. If the server stops
+// during the write, the original file remains intact.
 async function writeJsonArray(filePath, data) {
   const temporaryPath = `${filePath}.${process.pid}.tmp`;
 
@@ -35,15 +35,15 @@ function runExclusive(filePath, task) {
   const previous = writeQueues.get(filePath) || Promise.resolve();
   const current = previous.then(task);
 
-  // The stored promise never rejects, so one failed task cannot block the next.
+  // Keep the queue alive after a failed request so later writes can continue.
   writeQueues.set(filePath, current.catch(() => {}));
 
   return current;
 }
 
-// Read, change and write the array as one step. `mutate` receives the array,
-// changes it in place and returns the value for the caller. If it throws,
-// nothing is written.
+// Read, change and write as one step so another request cannot modify the file in between.
+// `mutate` edits the array in place and returns the value needed by the caller.
+// If it throws (a 404, for example), nothing gets written.
 function updateJsonArray(filePath, mutate) {
   return runExclusive(filePath, async () => {
     const items = await readJsonArray(filePath);
