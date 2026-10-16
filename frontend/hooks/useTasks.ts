@@ -8,8 +8,7 @@ export function useTasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filter, setFilter] = useState<TaskFilter>("all");
   const [loading, setLoading] = useState<boolean>(true);
-  // Loading the list and updating one task fail separately, so a failed
-  // update does not hide the whole list.
+  // Loading and updating have separate errors, so a failed update does not hide the whole list.
   const [loadError, setLoadError] = useState<string>("");
   const [updateError, setUpdateError] = useState<string>("");
   const [updatingTaskId, setUpdatingTaskId] = useState<string>("");
@@ -68,9 +67,20 @@ export function useTasks() {
     return tasks;
   }, [tasks, filter]);
 
+  // Provide counts for each filter so users can see the available tasks before selecting one.
+  const counts = useMemo<Record<TaskFilter, number>>(
+    () => ({
+      all: tasks.length,
+      pending: tasks.filter((task) => !task.completed).length,
+      completed: tasks.filter((task) => task.completed).length,
+    }),
+    [tasks]
+  );
+
   return {
     tasks,
     filteredTasks,
+    counts,
     filter,
     loading,
     loadError,

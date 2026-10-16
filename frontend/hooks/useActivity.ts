@@ -6,8 +6,7 @@ import { getErrorMessage, requestJson } from "@/lib/requestJson";
 import type { ActivityLog } from "@/types/api";
 
 export function useActivity() {
-  // Only the loaded data and the search text are stored.
-  // The visible list is calculated from them below.
+  // Store the loaded data and search text; derive the visible list below.
   const [activity, setActivity] = useState<ActivityLog[]>([]);
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(true);
@@ -22,7 +21,7 @@ export function useActivity() {
 
     requestJson<unknown>("/api/activity", { signal: controller.signal })
       .then((data) => {
-        // An error object must never be treated as the list.
+        // Treat any non-array response as invalid instead of displaying an error body as the list.
         if (!Array.isArray(data)) {
           throw new Error("Unexpected response from the server.");
         }
@@ -42,7 +41,7 @@ export function useActivity() {
         }
       });
 
-    // Cancel the request when the page is left or a new request starts.
+    // Cancel the request if the page is left or a new one starts (Retry).
     return () => controller.abort();
   }, [reloadCount]);
 
