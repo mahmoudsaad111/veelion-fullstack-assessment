@@ -1,26 +1,30 @@
 import Link from "next/link";
+import { PageHeader } from "@/components/ui/PageHeader";
+
+const SECTIONS = [
+  { href: "/tasks", title: "Task Dashboard", text: "Every task, with a quick way to tick it off." },
+  { href: "/activity", title: "Activity Feed", text: "What happened and when. Searchable." },
+  { href: "/reports", title: "Reports", text: "How many tasks there are, and how much has been going on." },
+];
 
 export default function HomePage() {
   return (
-    <main>
-      <header className="stack" style={{ marginBottom: "1.5rem" }}>
-        <h1 style={{ margin: 0 }}>VeeLion Frontend Assessment</h1>
-        <p style={{ margin: 0, color: "var(--muted)" }}>
-          Two separate modules built against the provided backend.
-        </p>
-      </header>
+    <main className="stack stack--lg">
+      <PageHeader
+        title="Task Manager"
+        description="Your tasks, a log of what happened to them, and a summary of both."
+      />
 
-      <section className="stack" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))" }}>
-        <Link href="/tasks" className="card" style={{ padding: "1rem", display: "block" }}>
-          <h2 style={{ marginTop: 0 }}>Task Dashboard</h2>
-
-        </Link>
-
-        <Link href="/activity" className="card" style={{ padding: "1rem", display: "block" }}>
-          <h2 style={{ marginTop: 0 }}>Activity Feed</h2>
-
-        </Link>
-      </section>
+      <ul className="nav-cards">
+        {SECTIONS.map((section) => (
+          <li key={section.href}>
+            <Link href={section.href} className="nav-card">
+              <span className="nav-card__title">{section.title}</span>
+              <span className="nav-card__text">{section.text}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
     </main>
   );
 }

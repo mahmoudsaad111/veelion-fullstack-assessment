@@ -1,14 +1,37 @@
+/*
+  Styling notes
+  - All colours, spacing and radii live in the variables below, so a change
+    in one place updates every page.
+  - I kept the teal from the starter project as the main colour and only
+    added what the new pages needed (status colours and error colours).
+  - Pages use small named classes (.task-item, .status-bar...) instead of
+    inline styles. The only inline style left is the width of the status bar
+    segments, because that comes from data.
+*/
+
 :root {
-  --bg: #f8f8f6;
+  --ink: #17232b;
+  --ink-soft: #52606b;
+  --paper: #f3f5f6;
   --surface: #ffffff;
-  --text: #1e2328;
-  --muted: #5c6670;
-  --border: #d3d8de;
-  --primary: #145e63;
-  --primary-soft: #dcefee;
+  --line: #dce2e6;
+  --line-strong: #bcc6cd;
+
+  --brand: #145e63;
+  --brand-strong: #0e4549;
+
   --danger: #9f2241;
-  --chip: #f1f4f6;
-  --radius: 10px;
+  --danger-tint: #fdf1f4;
+  --danger-line: #e6b7c4;
+
+  --status-todo: #7a8793;
+  --status-progress: #c2871a;
+  --status-done: #1d7a6c;
+
+  --radius: 8px;
+  --radius-sm: 6px;
+
+  --font: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 * {
@@ -20,9 +43,35 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100%;
-  background: radial-gradient(circle at top right, #eef4e7, var(--bg) 55%);
-  color: var(--text);
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 1.75rem;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+h2 {
+  font-size: 1.125rem;
+  line-height: 1.3;
+  font-weight: 650;
 }
 
 a {
@@ -30,58 +79,509 @@ a {
   text-decoration: none;
 }
 
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+small {
+  font-size: 0.85rem;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* ---------- Layout ---------- */
+
 main {
-  width: min(980px, 100% - 2rem);
+  width: min(880px, 100% - 2rem);
   margin: 0 auto;
-  padding: 2rem 0 3rem;
-}
-
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-}
-
-.button {
-  border: 1px solid var(--border);
-  background: var(--chip);
-  color: var(--text);
-  border-radius: 8px;
-  padding: 0.45rem 0.8rem;
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-
-.button:hover {
-  border-color: #bac1c9;
-}
-
-.button.primary {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: #fff;
-}
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  padding: 0.2rem 0.65rem;
-  font-size: 0.75rem;
-  background: var(--chip);
-}
-
-.input {
-  width: 100%;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  padding: 0.55rem 0.7rem;
-  font-size: 0.95rem;
-  background: #fff;
+  padding: 2rem 0 4rem;
 }
 
 .stack {
   display: grid;
   gap: 1rem;
+}
+
+.stack--lg {
+  gap: 1.75rem;
+}
+
+.site-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+
+.site-header__inner {
+  width: min(880px, 100% - 2rem);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-top: 0.25rem;
+}
+
+.site-header__brand {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--brand);
+  padding: 0.75rem 0;
+}
+
+.site-nav {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.site-nav__link {
+  display: block;
+  padding: 0.75rem 0 0.65rem;
+  border-bottom: 2px solid transparent;
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+
+.site-nav__link:hover {
+  color: var(--ink);
+}
+
+.site-nav__link[aria-current="page"] {
+  color: var(--ink);
+  font-weight: 650;
+  border-bottom-color: var(--brand);
+}
+
+.page-header {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.page-header p {
+  color: var(--ink-soft);
+  max-width: 60ch;
+}
+
+/* ---------- Surfaces ---------- */
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.panel {
+  padding: 1.1rem 1.25rem;
+}
+
+.empty {
+  color: var(--ink-soft);
+}
+
+/* ---------- Buttons and inputs ---------- */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.9rem;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.button:hover:not(:disabled) {
+  background: var(--paper);
+  border-color: var(--ink-soft);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.input {
+  width: 100%;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.8rem;
+  font: inherit;
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.input::placeholder {
+  color: var(--ink-soft);
+}
+
+/* Filter for the task list. Plain text with a count, the active one is underlined. */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.filters__option {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  background: transparent;
+  color: var(--ink-soft);
+  padding: 0.4rem 0;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.filters__option:hover {
+  color: var(--ink);
+}
+
+.filters__option[aria-pressed="true"] {
+  color: var(--ink);
+  font-weight: 650;
+  border-bottom-color: var(--brand);
+}
+
+.filters__count {
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Loading and error states ---------- */
+
+.loading {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--ink-soft);
+  padding: 0.5rem 0;
+}
+
+.spinner {
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 2px solid var(--line-strong);
+  border-top-color: var(--brand);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.85rem 1.1rem;
+}
+
+.notice--error {
+  background: var(--danger-tint);
+  border-color: var(--danger-line);
+  color: var(--danger);
+}
+
+/* ---------- Home ---------- */
+
+.nav-cards {
+  border-top: 1px solid var(--line);
+}
+
+.nav-cards li {
+  border-bottom: 1px solid var(--line);
+}
+
+.nav-card {
+  display: grid;
+  gap: 0.1rem;
+  padding: 1rem 0;
+}
+
+.nav-card__title {
+  font-weight: 650;
+  color: var(--brand-strong);
+}
+
+.nav-card:hover .nav-card__title {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.nav-card__text {
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+}
+
+/* ---------- Tasks ---------- */
+
+.task-list {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.task-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 0.8rem 1rem;
+}
+
+.task-item + .task-item {
+  border-top: 1px solid var(--line);
+}
+
+.task-item__toggle {
+  flex-shrink: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-top: 0.05rem;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--line-strong);
+  border-radius: 50%;
+  background: var(--surface);
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.task-item__toggle:hover:not(:disabled) {
+  border-color: var(--brand);
+}
+
+.task-item__toggle:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+.task-item__check {
+  width: 1rem;
+  height: 1rem;
+  stroke: transparent;
+}
+
+.task-item__toggle:hover:not(:disabled) .task-item__check {
+  stroke: var(--line-strong);
+}
+
+.task-item[data-completed="true"] .task-item__toggle {
+  background: var(--brand);
+  border-color: var(--brand);
+}
+
+.task-item[data-completed="true"] .task-item__check,
+.task-item[data-completed="true"] .task-item__toggle:hover:not(:disabled) .task-item__check {
+  stroke: #fff;
+}
+
+.task-item[data-completed="true"] .task-item__title {
+  color: var(--ink-soft);
+  text-decoration: line-through;
+}
+
+.task-item__body {
+  display: grid;
+  min-width: 0;
+}
+
+.task-item__title {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.task-item__meta {
+  color: var(--ink-soft);
+}
+
+/* ---------- Activity ---------- */
+
+.activity-summary {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.activity-list {
+  display: grid;
+}
+
+.activity-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.activity-item:first-child {
+  padding-top: 0;
+}
+
+.activity-item:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.activity-item__action {
+  font-weight: 600;
+}
+
+.activity-item__info {
+  color: var(--ink-soft);
+  overflow-wrap: anywhere;
+}
+
+.activity-item__time {
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+/* ---------- Reports ---------- */
+
+.figures {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem 2.5rem;
+  padding: 0.25rem 0 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.figure__label {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.figure__value {
+  font-size: 2.75rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.figure__hint {
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+}
+
+.report-section h2 {
+  margin-bottom: 0.9rem;
+}
+
+/* One bar for the whole task list, split by status. */
+.status-bar {
+  display: flex;
+  height: 1rem;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--line);
+  gap: 2px;
+}
+
+.status-bar__segment {
+  min-width: 6px;
+}
+
+.status-bar__segment[data-status="todo"],
+.status-legend__swatch[data-status="todo"] {
+  background: var(--status-todo);
+}
+
+.status-bar__segment[data-status="in-progress"],
+.status-legend__swatch[data-status="in-progress"] {
+  background: var(--status-progress);
+}
+
+.status-bar__segment[data-status="done"],
+.status-legend__swatch[data-status="done"] {
+  background: var(--status-done);
+}
+
+.status-legend {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 1.1rem;
+}
+
+.status-legend__item {
+  display: grid;
+  grid-template-columns: auto 1fr auto 3.5rem;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.status-legend__swatch {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 3px;
+}
+
+.status-legend__count {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.status-legend__share {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.report-note {
+  margin-top: 1rem;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  max-width: 60ch;
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 560px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .activity-item {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 3s;
+  }
+
+  .button,
+  .nav-card {
+    transition: none;
+  }
 }

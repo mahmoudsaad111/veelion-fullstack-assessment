@@ -1,73 +1,53 @@
 "use client";
 
-import Link from "next/link";
 import { useActivity } from "@/hooks/useActivity";
 import { formatActivityTime } from "@/lib/activity";
+import { formatRelativeTime } from "@/lib/dates";
+import { ErrorState } from "@/components/ui/ErrorState";
+import { LoadingState } from "@/components/ui/LoadingState";
+import { PageHeader } from "@/components/ui/PageHeader";
 
 export default function ActivityPage() {
   const { activity, visibleActivity, query, setQuery, loading, error, retry } = useActivity();
 
   return (
     <main className="stack">
-      <nav>
-        <Link href="/" className="button">
-          Back
-        </Link>
-      </nav>
+      <PageHeader title="Activity Feed" description="Search the log by action or details." />
 
-      <section className="card" style={{ padding: "1rem" }}>
-        <h1 style={{ marginTop: 0, marginBottom: "0.5rem" }}>Activity Feed</h1>
+      <input
+        className="input"
+        type="search"
+        placeholder="Search activity"
+        aria-label="Search activity"
+        value={query}
+        onChange={(event) => setQuery(event.target.value)}
+      />
 
-        <input
-          className="input"
-          placeholder="Search activity"
-          aria-label="Search activity"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-        />
-      </section>
-
-      {loading ? (
-        <section className="card" style={{ padding: "1rem" }} role="status">
-          <p style={{ margin: 0 }}>Loading activity...</p>
-        </section>
-      ) : null}
-
-      {error ? (
-        <section
-          className="card"
-          style={{ padding: "1rem", borderColor: "#e3b4c0", background: "#fff8fa" }}
-          role="alert"
-        >
-          <p style={{ marginTop: 0, marginBottom: "0.75rem", color: "var(--danger)" }}>{error}</p>
-          <button type="button" className="button" onClick={retry}>
-            Retry
-          </button>
-        </section>
-      ) : null}
+      {loading ? <LoadingState label="Loading activity..." /> : null}
+      {error ? <ErrorState message={error} onRetry={retry} /> : null}
 
       {!loading && !error ? (
         <>
-          <section className="card" style={{ padding: "1rem" }}>
-            <small style={{ color: "var(--muted)" }}>
-              Total: {activity.length} | Visible: {visibleActivity.length}
-            </small>
-          </section>
+          <p className="activity-summary">
+            Showing {visibleActivity.length} of {activity.length} {activity.length === 1 ? "entry" : "entries"}
+          </p>
 
-          <section className="card" style={{ padding: "1rem" }}>
+          <section className="panel">
             {visibleActivity.length === 0 ? (
-              <p style={{ margin: 0, color: "var(--muted)" }}>
+              <p className="empty">
                 {activity.length === 0 ? "No activity yet." : "No activity matches your search."}
               </p>
             ) : (
-              <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "grid", gap: "0.7rem" }}>
+              <ul className="activity-list">
                 {visibleActivity.map((item) => (
-                  <li key={item.id} style={{ borderBottom: "1px solid var(--border)", paddingBottom: "0.6rem" }}>
-                    <div style={{ fontWeight: 600 }}>{item.action || "(no action)"}</div>
-                    <div>{item.info || "(no info)"}</div>
-                    <small style={{ color: "var(--muted)" }}>
-                      <time dateTime={item.when}>{formatActivityTime(item.when)}</time>
-                    </small>
+                  <li key={item.id} className="activity-item">
+                    <div>
+                      <p className="activity-item__action">{item.action || "(no action)"}</p>
+                      <p className="activity-item__info">{item.info || "(no info)"}</p>
+                    </div>
+                    <time className="activity-item__time" dateTime={item.when} title={formatActivityTime(item.when)}>
+                      {formatRelativeTime(item.when)}
+                    </time>
                   </li>
                 ))}
               </ul>
