@@ -33,7 +33,7 @@ async function getTaskById(taskId) {
   return task;
 }
 
-// The payload is already validated and normalized by taskValidator.
+// The controller validates and normalizes the payload before it reaches the service.
 async function createTask(payload) {
   return updateJsonArray(TASKS_FILE_PATH, (tasks) => {
     const newTask = buildTaskRecord(payload);
@@ -43,7 +43,8 @@ async function createTask(payload) {
   });
 }
 
-// Only title and completed can change. id and createdAt are never touched.
+// Only title and completed can change. Building the record from these fields
+// keeps id and createdAt unchanged.
 async function updateTask(taskId, updates) {
   return updateJsonArray(TASKS_FILE_PATH, (tasks) => {
     const taskIndex = tasks.findIndex((item) => item.id === taskId);
