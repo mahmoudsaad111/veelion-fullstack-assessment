@@ -163,5 +163,7 @@ type GetTasksSummaryResponse = TasksSummary;
 ```
 
 Notes:
+- `total` is the number of tasks. `todo` and `done` come from the boolean `completed`, so `todo + in-progress + done` always equals `total`.
 - `in-progress` is currently returned as `0` because task data only includes boolean `completed`.
+- `recentActivityCount` counts activity entries from the last 7 days, up to now. Entries with a missing or invalid `when` are ignored.
 - Response shape is raw object.
