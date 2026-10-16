@@ -1,7 +1,7 @@
 const activityService = require('../services/activity.service');
 const { validateCreateActivity } = require('../utils/activityValidator');
 
-// Activity responses are raw (not wrapped in { data }), as documented.
+// Activity responses remain unwrapped to match the documented API contract.
 async function listActivity(req, res) {
   const entries = await activityService.getAllActivity();
   res.status(200).json(entries);

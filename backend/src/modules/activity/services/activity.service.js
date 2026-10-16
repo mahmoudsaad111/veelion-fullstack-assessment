@@ -9,7 +9,7 @@ async function getAllActivity() {
   return readJsonArray(ACTIVITY_FILE_PATH);
 }
 
-// The payload is already validated and normalized by activityValidator.
+// The controller validates and normalizes the payload before it reaches the service.
 async function createActivity(payload) {
   return updateJsonArray(ACTIVITY_FILE_PATH, (entries) => {
     const entry = {

@@ -16,7 +16,7 @@ function validateCreateActivity(payload) {
   const action = readOptionalString(payload, 'action', MAX_ACTION_LENGTH);
   const info = readOptionalString(payload, 'info', MAX_INFO_LENGTH);
 
-  // An empty string counts as "not provided".
+  // An empty string is treated the same as not sending the field.
   const normalized = {};
   if (action) {
     normalized.action = action;
