@@ -15,7 +15,7 @@ async function readErrorMessage(response: Response): Promise<string> {
   }
 }
 
-// Browser-side helper for calling our own /api routes.
+// Shared helper for calling the frontend /api routes from the browser.
 export async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
   const response = await fetch(url, {
     ...init,
